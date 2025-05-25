@@ -5,7 +5,7 @@ import {
   TemplateEmailOptions,
   EmailResponse 
 } from './types';
-import { logger } from 'astreus';
+import { logger } from '@astreus-ai/astreus';
 
 /**
  * Client for Resend API
@@ -77,14 +77,14 @@ export class ResendClient {
       
       const formattedOptions = this.formatEmailOptions(options);
       
-      const response = await this.client.emails.send(formattedOptions);
+      const response = await this.client.emails.send(formattedOptions as any);
       
-      if (!response || !response.id) {
+      if (!response || !response.data?.id) {
         throw new Error('Failed to send email: No response from Resend API');
       }
       
       return {
-        id: response.id,
+        id: response.data.id,
         success: true
       };
     } catch (error) {
@@ -121,14 +121,14 @@ export class ResendClient {
         data: options.templateData
       };
       
-      const response = await this.client.emails.send(formattedOptions);
+      const response = await this.client.emails.send(formattedOptions as any);
       
-      if (!response || !response.id) {
+      if (!response || !response.data?.id) {
         throw new Error('Failed to send template email: No response from Resend API');
       }
       
       return {
-        id: response.id,
+        id: response.data.id,
         success: true
       };
     } catch (error) {
