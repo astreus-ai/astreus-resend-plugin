@@ -61,9 +61,9 @@ export class ResendPlugin implements PluginInstance {
       // Log a summary of tools
       this.logToolsSummary();
       
-      logger.success('Resend email plugin initialized successfully');
+      logger.success("Resend Plugin", "Initialization", 'Resend email plugin initialized successfully');
     } catch (error) {
-      logger.error('Failed to initialize Resend plugin:', error);
+      logger.error("Resend Plugin", "Initialization", 'Failed to initialize Resend plugin');
       throw new Error(`Resend plugin initialization failed: ${error}`);
     }
   }
@@ -73,7 +73,7 @@ export class ResendPlugin implements PluginInstance {
    */
   private logToolsSummary(): void {
     const toolNames = Array.from(this.tools.keys());
-    logger.info(`Resend plugin registered ${toolNames.length} tools: ${toolNames.join(', ')}`);
+    logger.info("Resend Plugin", "Tools", `Registered ${toolNames.length} tools: ${toolNames.join(', ')}`);
   }
 
   /**
@@ -119,7 +119,7 @@ export class ResendPlugin implements PluginInstance {
             
             return result;
           } catch (error) {
-            logger.error(`Error executing tool ${manifest.name}:`, error);
+            logger.error("Resend Plugin", "Tool", `Error executing tool ${manifest.name}: ${error}`);
             if (error instanceof Error) {
               throw error;
             } else {
@@ -283,6 +283,47 @@ export class ResendPlugin implements PluginInstance {
   }
 
   /**
+   * Check if a tool exists
+   */
+  hasTool(name: string): boolean {
+    return this.tools.has(name);
+  }
+
+  /**
+   * Get the number of registered tools
+   */
+  getToolCount(): number {
+    return this.tools.size;
+  }
+
+  /**
+   * Execute a tool by name
+   */
+  async executeTool(name: string, params: Record<string, any>): Promise<any> {
+    const tool = this.getTool(name);
+    if (!tool) {
+      throw new Error(`Tool ${name} not found`);
+    }
+    return await tool.execute(params);
+  }
+
+  /**
+   * Initialize all registered tools
+   */
+  async initializeAll(): Promise<void> {
+    // Initialize the plugin itself
+    await this.init();
+  }
+
+  /**
+   * Cleanup all registered tools
+   */
+  async cleanupAll(): Promise<void> {
+    // Cleanup the plugin itself
+    this.client = null;
+  }
+
+  /**
    * Get a tool by its full name
    */
   getToolByFullName(fullName: string): Plugin | undefined {
@@ -293,12 +334,12 @@ export class ResendPlugin implements PluginInstance {
    * Debug the plugin interface
    */
   public debugPluginInterface(): boolean {
-    logger.info(`Plugin [${this.name}] Configuration:`);
-    logger.info(`  Tools: ${this.getTools().map(t => t.name).join(', ')}`);
+    logger.info("Resend Plugin", "Debug", `Plugin [${this.name}] Configuration:`);
+    logger.info("Resend Plugin", "Debug", `  Tools: ${this.getTools().map(t => t.name).join(', ')}`);
     
     for (const tool of this.getTools()) {
-      logger.info(`  Tool: ${tool.name}`);
-      logger.info(`    Parameters: ${tool.parameters.map(p => p.name).join(', ')}`);
+      logger.info("Resend Plugin", "Debug", `  Tool: ${tool.name}`);
+      logger.info("Resend Plugin", "Debug", `    Parameters: ${tool.parameters.map(p => p.name).join(', ')}`);
     }
     
     return true;
@@ -328,7 +369,7 @@ export class ResendPlugin implements PluginInstance {
       return await this.client.sendEmail(options);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      logger.error(`Failed to send email: ${errorMessage}`);
+      logger.error("Resend Plugin", "Email", `Failed to send email: ${errorMessage}`);
       throw new Error(`Failed to send email: ${errorMessage}`);
     }
   }
@@ -356,7 +397,7 @@ export class ResendPlugin implements PluginInstance {
       return await this.client.sendTemplateEmail(options);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      logger.error(`Failed to send template email: ${errorMessage}`);
+      logger.error("Resend Plugin", "Template", `Failed to send template email: ${errorMessage}`);
       throw new Error(`Failed to send template email: ${errorMessage}`);
     }
   }

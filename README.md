@@ -42,8 +42,13 @@ To get these values:
 ### Basic Usage
 
 ```typescript
-import { createAgent } from 'astreus';
+import { createAgent, createProvider, createMemory, createDatabase } from '@astreus-ai/astreus';
 import ResendPlugin from '@astreus-ai/resend-plugin';
+
+// Initialize database and memory
+const db = await createDatabase();
+const memory = await createMemory({ database: db });
+const provider = createProvider({ type: 'openai', model: 'gpt-4o-mini' });
 
 // Create a Resend plugin instance
 const resendPlugin = new ResendPlugin();
@@ -55,8 +60,13 @@ await resendPlugin.init();
 const agent = await createAgent({
   name: 'Email Agent',
   description: 'An agent that can send emails',
-  plugins: [resendPlugin]
+  provider: provider,
+  memory: memory,
+  database: db
 });
+
+// Add Resend plugin tools to the agent
+resendPlugin.getTools().forEach(tool => agent.addTool(tool));
 
 // Now the agent can use email functionality
 const response = await agent.chat(`Send an email to john@example.com with subject "Welcome" and message "Hello, welcome to our service!"`);
@@ -65,8 +75,13 @@ const response = await agent.chat(`Send an email to john@example.com with subjec
 ### Custom Configuration
 
 ```typescript
-import { createAgent } from 'astreus';
+import { createAgent, createProvider, createMemory, createDatabase } from '@astreus-ai/astreus';
 import ResendPlugin from '@astreus-ai/resend-plugin';
+
+// Initialize database and memory
+const db = await createDatabase();
+const memory = await createMemory({ database: db });
+const provider = createProvider({ type: 'openai', model: 'gpt-4o-mini' });
 
 // Create a plugin with custom configuration
 const resendPlugin = new ResendPlugin({
@@ -83,8 +98,13 @@ await resendPlugin.init();
 const agent = await createAgent({
   name: 'Email Agent',
   description: 'An agent that can send emails',
-  plugins: [resendPlugin]
+  provider: provider,
+  memory: memory,
+  database: db
 });
+
+// Add Resend plugin tools to the agent
+resendPlugin.getTools().forEach(tool => agent.addTool(tool));
 ```
 
 ## Available Tools

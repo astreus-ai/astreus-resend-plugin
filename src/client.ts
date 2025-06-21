@@ -26,7 +26,7 @@ export class ResendClient {
     };
     
     if (!this.config.apiKey) {
-      logger.warn('Resend API key not provided. Email functionality will not work.');
+      logger.warn("Resend Client", "Init", 'Resend API key not provided. Email functionality will not work.');
     }
     
     this.client = new Resend(this.config.apiKey);
@@ -89,7 +89,7 @@ export class ResendClient {
       };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      logger.error(`Failed to send email: ${errorMessage}`);
+      logger.error("Resend Client", "Email", `Failed to send email: ${errorMessage}`);
       
       throw new Error(`Failed to send email: ${errorMessage}`);
     }
@@ -133,7 +133,7 @@ export class ResendClient {
       };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      logger.error(`Failed to send template email: ${errorMessage}`);
+      logger.error("Resend Client", "Template", `Failed to send template email: ${errorMessage}`);
       
       throw new Error(`Failed to send template email: ${errorMessage}`);
     }
