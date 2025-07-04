@@ -1,3 +1,5 @@
+![Resend Plugin](src/assets/resend-plugin.webp)
+
 # Astreus Resend Plugin
 
 An email integration plugin for the Astreus AI agent framework, allowing agents to send emails using [Resend](https://resend.com).
